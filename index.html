@@ -1,0 +1,2033 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viva Aerobus - Optimización del Proceso de Abordaje</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8E53 100%);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo::before {
+            content: "✈️";
+            margin-right: 0.5rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-menu a:hover {
+            opacity: 0.8;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            margin-top: 70px;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .savings-highlight {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .savings-amount {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #4ade80;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Stats Cards */
+        .stats-section {
+            padding: 4rem 2rem;
+            background: white;
+        }
+
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8E53 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            transform: translateY(0);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(255, 107, 53, 0.3);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Main Content Sections */
+        .content-section {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: #1e3a8a;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #6b7280;
+        }
+
+        /* Interactive Cards */
+        .method-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .method-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            border: 3px solid transparent;
+        }
+
+        .method-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: #FF6B35;
+        }
+
+        .method-card.winner {
+            border-color: #4ade80;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+        }
+
+        .method-title {
+            font-size: 1.5rem;
+            color: #1e3a8a;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .method-title::before {
+            content: "🎯";
+            margin-right: 0.5rem;
+        }
+
+        .winner .method-title::before {
+            content: "🏆";
+        }
+
+        .method-time {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #FF6B35;
+            margin-bottom: 0.5rem;
+        }
+
+        .winner .method-time {
+            color: #16a34a;
+        }
+
+        /* Code Section */
+        .code-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .code-card {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .code-card:hover {
+            transform: scale(1.02);
+        }
+
+        .code-header {
+            background: #334155;
+            padding: 1rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .code-preview {
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .view-code-btn {
+            background: #FF6B35;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .view-code-btn:hover {
+            background: #e55a2b;
+        }
+
+        /* Results Section */
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin: 3rem 0;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .video-container {
+            position: relative;
+            background: #000;
+            border-radius: 15px;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+        }
+
+        .video-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8E53 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Footer */
+        .footer {
+            background: #1e3a8a;
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .savings-amount {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: modalFadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-radius: 20px;
+            max-width: 90vw;
+            max-height: 90vh;
+            width: 1000px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            transform: scale(0.7);
+            animation: modalScaleIn 0.3s ease-out forwards;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8E53 100%);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-body {
+            padding: 0;
+            max-height: calc(90vh - 120px);
+            overflow-y: auto;
+        }
+
+        .code-content {
+            padding: 2rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            background: #1e293b;
+        }
+
+        .code-tabs {
+            display: flex;
+            background: #334155;
+            border-bottom: 1px solid #475569;
+        }
+
+        .code-tab {
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .code-tab.active {
+            color: #FF6B35;
+            background: #1e293b;
+            border-bottom-color: #FF6B35;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #475569;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: #FF6B35;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #f472b6; font-weight: bold; }
+        .function { color: #60a5fa; }
+        .comment { color: #6b7280; font-style: italic; }
+        .string { color: #34d399; }
+        .number { color: #fbbf24; }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Loading animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes modalScaleIn {
+            from {
+                transform: scale(0.7);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">Viva Aerobus</div>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="#problema">Problemática</a></li>
+                    <li><a href="#metodologia">Metodología</a></li>
+                    <li><a href="#codigos">Códigos</a></li>
+                    <li><a href="#resultados">Resultados</a></li>
+                    <li><a href="#impacto">Impacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Optimización del Proceso de Abordaje</h1>
+            <p>Simulación MATLAB para mejorar la eficiencia operativa</p>
+            <div class="savings-highlight">
+                <div class="savings-amount">$21.4M</div>
+                <p>Ahorro anual potencial con el método WILMA 2</p>
+            </div>
+            <div class="action-buttons">
+                <a href="#resultados" class="btn btn-primary">Ver Resultados</a>
+                <a href="#codigos" class="btn btn-secondary">Explorar Códigos</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number">324K</div>
+                <div class="stat-label">Minutos de retraso<br>en 2023-2024</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">6.75</div>
+                <div class="stat-label">Minutos de ahorro<br>con WILMA 2</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">45%</div>
+                <div class="stat-label">Reducción en tiempo<br>de abordaje</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">3</div>
+                <div class="stat-label">Métodos WILMA<br>simulados</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section id="problema" class="content-section">
+        <div class="section-header">
+            <h2 class="section-title">Problemática Identificada</h2>
+            <p class="section-subtitle">El abordaje representa uno de los principales cuellos de botella en el turnaround</p>
+        </div>
+        <div class="method-cards">
+            <div class="method-card">
+                <h3 class="method-title">Pasajeros con Movilidad Reducida</h3>
+                <div class="method-time">+3.09 min</div>
+                <p>Tiempos adicionales para asistencia y manejo de sillas de ruedas</p>
+            </div>
+            <div class="method-card">
+                <h3 class="method-title">Sobreventas y Errores</h3>
+                <div class="method-time">+2–5 min</div>
+                <p>Cambios de asiento interrumpen la secuencia y causan retrasos.</p>
+            </div>
+            <div class="method-card">
+                <h3 class="method-title">Pasajero Faltante</h3>
+                <div class="method-time">+4–8 min</div>
+                <p>La localización y retiro de equipaje generan demoras significativas.</p>
+            </div>
+            <div class="method-card">
+                <h3 class="method-title">Interferencias en el Pasillo</h3>
+                <div class="method-time">+6.75 min</div>
+                <p>Equipaje de mano y bloqueo por asientos desordenan el avance.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Methods Section -->
+    <section id="metodologia" class="content-section">
+        <div class="section-header">
+            <h2 class="section-title">Métodos de Abordaje Simulados</h2>
+            <p class="section-subtitle">Comparación entre el método actual y las variantes WILMA</p>
+        </div>
+        <div class="method-cards">
+            <div class="method-card">
+                <h3 class="method-title">Método Actual (Viva)</h3>
+                <div class="method-time">14.88 min</div>
+                <p>Ingreso por bloques, basado en filas y letras específicas</p>
+            </div>
+            <div class="method-card">
+                <h3 class="method-title">WILMA 1</h3>
+                <div class="method-time">9.22 min</div>
+                <p>De ventana a pasillo, separando filas delanteras y traseras.</p>
+            </div>
+            <div class="method-card winner">
+                <h3 class="method-title">WILMA 2 (Ganador)</h3>
+                <div class="method-time">8.13 min</div>
+                <p>Cruza lados A-F y B-E, alternando filas frontal-trasera.</p>
+            </div>
+            <div class="method-card">
+                <h3 class="method-title">WILMA 3</h3>
+                <div class="method-time">8.16 min</div>
+                <p>Orden simple por letra: A, F, B, E, C, D.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Code Section -->
+    <section id="codigos" class="content-section">
+        <div class="section-header">
+            <h2 class="section-title">Códigos MATLAB</h2>
+            <p class="section-subtitle">8 módulos de simulación desarrollados para el análisis</p>
+        </div>
+        <div class="code-grid">
+            <div class="code-card">
+                <div class="code-header">
+                    <span>🎯 main_simulation</span>
+                    <button class="view-code-btn" onclick="showCode('main')">Ver Código</button>
+                </div>
+                <div class="code-preview">
+                function main_simulation(numIter, pctLuggage)
+                    % MAIN_SIMULATION Ejecuta múltiples simulaciones y compara solo WILMA V1–V3
+
+                    % Inicializar resultados
+                    time_v1 = zeros(1, numIter);
+                    time_v2 = zeros(1, numIter);
+                    time_v3 = zeros(1, numIter);
+                        ...
+                </div>
+            </div>
+            
+            <div class="code-card">
+                <div class="code-header">
+                    <span>👥 generate_passengers</span>
+                    <button class="view-code-btn" onclick="showCode('passengers')">Ver Código</button>
+                </div>
+                <div class="code-preview">
+                function passengers = generate_passengers(pctLuggage)
+                    % GENERATE_PASSENGERS Genera los pasajeros para un A320 con 30 filas y 6 columnas
+                    % pctLuggage: proporción (entre 0 y 1) de pasajeros con maleta
+                    
+                    numRows = 30;
+                    seatsPerRow = 6;
+                    totalPassengers = numRows * seatsPerRow;
+                    maxLuggage = 100;</div>
+            </div>
+
+            <div class="code-card">
+                <div class="code-header">
+                    <span>🔄 sort_wilma_1</span>
+                    <button class="view-code-btn" onclick="showCode('wilma1')">Ver Código</button>
+                </div>
+                <div class="code-preview">
+                function boardingOrder = sort_wilma_v1(passengers)
+                    % Nuevo WILMA V1 basado en zonas específicas por columna y fila
+
+                    % Datos base
+                    rows = [passengers.Row];
+                    seats = {passengers.Seat};
+
+                    % Funciones auxiliares
+                    is_seat = @(letters) ismember(seats, cellstr(letters'));
+                    in_row_range = @(r1, r2) rows >= r1 & rows <= r2;
+
+                    % Zona 1+2: PRIORITY filas 1–7
+                    z1 = in_row_range(1, 7);  % todas las letras</div>
+            </div>
+
+            <div class="code-card">
+                <div class="code-header">
+                    <span>🏆 sort_wilma_2</span>
+                    <button class="view-code-btn" onclick="showCode('wilma2')">Ver Código</button>
+                </div>
+                <div class="code-preview">
+                function boardingOrder = sort_wilma_v2(passengers)
+                    % WILMA V2 basado en zonas cruzadas por fila y letra
+
+                    rows = [passengers.Row];
+                    seats = {passengers.Seat};
+
+                    is_seat = @(letters) ismember(seats, cellstr(letters'));
+                    in_row_range = @(r1, r2) rows >= r1 & rows <= r2;
+
+                    % Zona 1+2: PRIORITY filas 1–7</div>
+            </div>
+
+            <div class="code-card">
+                <div class="code-header">
+                    <span>🎲 sort_wilma_3</span>
+                    <button class="view-code-btn" onclick="showCode('wilma3')">Ver Código</button>
+                </div>
+                <div class="code-preview">
+                function boardingOrder = sort_wilma_v3(passengers)
+                    % WILMA V3: Orden por columna (A–F) de filas 7 a 30
+
+                    rows = [passengers.Row];
+                    seats = {passengers.Seat};
+
+                    is_seat = @(letters) ismember(seats, cellstr(letters'));
+                    in_row_range = @(r1, r2) rows >= r1 & rows <= r2;
+
+                    % PRIORITY: filas 1–7</div>
+            </div>
+
+            <div class="code-card">
+                <div class="code-header">
+                    <span>📊 visualize_boarding</span>
+                    <button class="view-code-btn" onclick="showCode('visualizer')">Ver Código</button>
+                </div>
+                <div class="code-preview">
+                function visualize_boarding(method, pctLuggage)
+                    % Simulación con círculos con color y número visible
+
+                    numRows = 30;
+                    aisleX = 4; % Pasillo visual entre C y D
+                    speedFactor = 2;
+
+                    % Crear pasajeros
+                    passengers = generate_passengers(pctLuggage);
+                    if strcmpi(method, 'random')
+                        order = sort_random(passengers);
+                    elseif strcmpi(method, 'wilma')
+                        order = sort_wilma(passengers);
+                    else
+                        error('Método debe ser "random" o "wilma".');
+                    end
+                    </div>
+            </div>
+
+            <div class="code-card">
+                <div class="code-header">
+                    <span>📈 simulate_boarding</span>
+                    <button class="view-code-btn" onclick="showCode('simulation')">Ver Código</button>
+                </div>
+                <div class="code-preview">
+unction simulate_boarding(method, pctLuggage)
+    % VISUALIZE_BOARDING Simula el abordaje con visualización gráfica
+    % method: 'random', 'wilma1', 'wilma2', 'wilma3'
+
+    numRows = 30;
+    aisleX = 4; % posición X del pasillo para visualización
+    speedFactor = 8;
+
+    % Crear pasajeros
+    passengers = generate_passengers(pctLuggage);
+
+    % Elegir método de abordaje
+    switch lower(method)
+        case 'random'
+            order = sort_random(passengers);
+        case 'wilma1'
+            order = sort_wilma_v1(passengers);
+        case 'wilma2'</div>
+            </div>
+
+            <div class="code-card">
+                <div class="code-header">
+                    <span>⚖️ simulate_boarding_backend</span>
+                    <button class="view-code-btn" onclick="showCode('comparator')">Ver Código</button>
+                </div>
+                <div class="code-preview">
+                function totalTime = simulate_boarding_backend(passengers)
+                    % SIMULATE_BOARDING_BACKEND Simula el abordaje y devuelve el tiempo total (sin gráficos)
+
+                    numRows = 30;
+                    aisle = zeros(1, numRows);
+                    seatedCount = 0;
+                    totalPassengers = length(passengers);
+                    nextToEnter = 1;
+                    t = 0;
+
+                    % Inicializar estado de cada pasajero
+                    for i = 1:totalPassengers
+                        passengers(i).Status = "waiting";
+                        passengers(i).Position = -1;
+                        passengers(i).TimeRemaining = 0;
+                    end
+            </div>
+    </section>
+
+    <!-- Results Section -->
+    <section id="resultados" class="content-section">
+        <div class="section-header">
+            <h2 class="section-title">Resultados de la Simulación</h2>
+            <p class="section-subtitle">Análisis comparativo de 100 iteraciones por método</p>
+        </div>
+        <div class="results-grid">
+            <div class="chart-container">
+                <h3>Comparación de Tiempos</h3>
+                <div style="height: 300px; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border-radius: 10px;">
+                    <img src="boxplot.jpg" alt="Boxplot de comparación de métodos WILMA" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px;">
+                </div>
+            </div>
+            <div class="video-container">
+                <div class="video-placeholder">
+                    <video controls style="width: 100%; height: 100%; border-radius: 15px; object-fit: cover;">
+                    <source src="video.mp4" type="video/mp4">
+                    <div class="video-placeholder">
+                        🎥 Video de Simulación WILMA 2<br>
+                        <small>Tu navegador no soporta el elemento video</small>
+                    </div>
+                </video>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Impact Section -->
+    <section id="impacto" class="content-section">
+        <div class="section-header">
+            <h2 class="section-title">Impacto Económico</h2>
+            <p class="section-subtitle">Proyección de ahorros con la implementación de WILMA 2</p>
+        </div>
+        <div class="method-cards">
+            <div class="method-card">
+                <h3 class="method-title">Ahorro por Vuelo</h3>
+                <div class="method-time">$270</div>
+                <p>6.75 minutos × $40/min</p>
+            </div>
+            <div class="method-card">
+                <h3 class="method-title">Ahorro Diario</h3>
+                <div class="method-time">$108K</div>
+                <p>400 vuelos × $270/vuelo</p>
+            </div>
+            <div class="method-card winner">
+                <h3 class="method-title">Ahorro Anual</h3>
+                <div class="method-time">$21.4M</div>
+                <p>365 días × $108K/día</p>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Code Modal -->
+    <div id="codeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">
+                    <span id="modalIcon">🎯</span>
+                    <span id="modalTitleText">Código MATLAB</span>
+                </h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="code-tabs">
+                    <button class="code-tab active" onclick="switchTab('main')">Función Principal</button>
+                    <button class="code-tab" onclick="switchTab('docs')">Documentación</button>
+                </div>
+                <div style="position: relative;">
+                    <button class="copy-btn" onclick="copyCode()">📋 Copiar</button>
+                    <div class="code-content" id="codeContent">
+                        <!-- El código se cargará aquí dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Viva - Proyecto de Optimización de Abordaje - Equipo 1 de Tec de Monterrey</p>
+        <p>Desarrollado con MATLAB | Simulación y Análisis de Procesos</p>
+    </footer>
+
+        <script>
+        // Base de datos de códigos MATLAB
+        const codeDatabase = {
+            main: {
+                icon: '🎯',
+                title: 'main_simulation',
+                main: `function main_simulation(numIter, pctLuggage)
+    % MAIN_SIMULATION Ejecuta múltiples simulaciones y compara solo WILMA V1–V3
+
+    % Inicializar resultados
+    time_v1 = zeros(1, numIter);
+    time_v2 = zeros(1, numIter);
+    time_v3 = zeros(1, numIter);
+
+    for i = 1:numIter
+        passengers = generate_passengers(pctLuggage);
+
+        % WILMA V1
+        order_v1 = sort_wilma_v1(passengers);
+        time_v1(i) = simulate_boarding_backend(order_v1);
+
+        % WILMA V2
+        order_v2 = sort_wilma_v2(passengers);
+        time_v2(i) = simulate_boarding_backend(order_v2);
+
+        % WILMA V3
+        order_v3 = sort_wilma_v3(passengers);
+        time_v3(i) = simulate_boarding_backend(order_v3);
+    end
+
+    % Calcular estadísticas
+    medios = [mean(time_v1), mean(time_v2), mean(time_v3)];
+    stds   = [std(time_v1),  std(time_v2),  std(time_v3)];
+
+    % Mostrar resultados
+    fprintf('\n--- RESULTADOS (%d iteraciones, %.0f%% con maleta) ---\n', numIter, pctLuggage*100);
+    modelos = {'WILMA V1', 'WILMA V2', 'WILMA V3'};
+    for i = 1:3
+        fprintf('%-9s | Promedio: %5.2f s | Std: %5.2f s\n', modelos{i}, medios(i), stds(i));
+    end
+
+    % Boxplot comparativo
+    figure;
+    boxplot([time_v1', time_v2', time_v3'], ...
+            'Labels', {'WILMA V1', 'WILMA V2', 'WILMA V3'});
+    ylabel('Tiempo total de abordaje (s)');
+    title(sprintf('Comparación de versiones WILMA (%d iteraciones, %.0f%% con maleta)', numIter, pctLuggage*100));
+    grid on;
+
+    % Mostrar el mejor método
+    [~, bestIdx] = min(medios);
+    fprintf('\n✅ El método más eficiente en promedio fue: %s\n', modelos{bestIdx});
+end
+`,
+                docs: `<span class="comment">%% DOCUMENTACIÓN - main_simulation
+% 
+% PROPÓSITO:
+%   Ejecutar múltiples simulaciones de abordaje de pasajeros utilizando
+%   distintas variaciones del método WILMA para comparar su eficiencia.
+%
+% MÉTODOS IMPLEMENTADOS:
+%   - wilma1: Abordaje clásico WILMA (ventana, medio, pasillo por filas)
+%   - wilma2: Versión cruzada optimizada (filas alternadas por zona)
+%   - wilma3: Agrupación por letra de asiento (zonas A–F)
+%
+% PARÁMETROS DE ENTRADA:
+%   - numIter (int): Número de simulaciones a ejecutar por método
+%   - pctLuggage (float): Porcentaje de pasajeros que llevan maleta (0–1)
+%
+% SALIDAS:
+%   - Imprime el promedio y la desviación estándar de cada método
+%   - Genera un gráfico comparativo tipo boxplot
+%   - Muestra el método más eficiente según tiempo promedio
+%
+% NOTAS:
+%   - No incluye visualización gráfica, es útil para evaluación masiva
+%   - Utiliza la función simulate_boarding_backend (sin dibujo)
+%
+% EJEMPLO DE USO:
+%   main_simulation(100, 1);   % 100 iteraciones, todos con maleta
+%
+% AUTORES:
+%   Equipo de Optimización - Viva Aerobus
+%   Fecha: Junio 2025
+%   Versión: 1.0</span>`
+            },
+            passengers: {
+                icon: '👥',
+                title: 'generate_passengers',
+                main: `function passengers = generate_passengers(pctLuggage)
+    % GENERATE_PASSENGERS Genera los pasajeros para un A320 con 30 filas y 6 columnas
+    % pctLuggage: proporción (entre 0 y 1) de pasajeros con maleta
+    
+    numRows = 30;
+    seatsPerRow = 6;
+    totalPassengers = numRows * seatsPerRow;
+    maxLuggage = 100;
+
+    % Aseguramos que el número total de maletas no sobrepase la capacidad
+    numWithLuggage = min(round(pctLuggage * totalPassengers), maxLuggage);
+
+    % Asignamos aleatoriamente a los pasajeros que tendrán maleta
+    luggageIndices = randperm(totalPassengers, numWithLuggage);
+
+    % Inicializamos la estructura
+    passengers(totalPassengers) = struct();
+
+    seatLetters = 'ABCDEF';
+    seatTypes = {'window', 'middle', 'aisle', 'aisle', 'middle', 'window'};
+
+    for i = 1:totalPassengers
+        row = ceil(i / seatsPerRow);
+        seatIndex = mod(i-1, seatsPerRow) + 1;
+
+        passengers(i).ID = i;
+        passengers(i).Row = row;
+        passengers(i).Seat = seatLetters(seatIndex);
+        passengers(i).SeatType = seatTypes{seatIndex};
+
+        % Asignamos puerta según fila
+        if row <= 15
+            passengers(i).Entrance = 'front';
+        else
+            passengers(i).Entrance = 'back';
+        end
+
+        % Maleta y tiempo de guardado
+        hasLuggage = ismember(i, luggageIndices);
+        passengers(i).HasLuggage = hasLuggage;
+
+        if hasLuggage
+            % Tiempo de stow entre 4 y 10 segundos (uniforme)
+            passengers(i).StowTime = round(4 + (10-4)*rand(), 1);
+        else
+            passengers(i).StowTime = 0;
+        end
+    end
+end
+`,
+                docs: `<span class="comment">%% DOCUMENTACIÓN - generate_passengers
+% 
+% PROPÓSITO:
+%   Genera la lista de pasajeros con sus características necesarias para
+%   simular el proceso de abordaje en un avión tipo A320 (180 asientos).
+%
+% DETALLES DE IMPLEMENTACIÓN:
+%   - Cada pasajero tiene atributos como:
+%       · ID único
+%       · Asiento asignado (fila y letra)
+%       · Maleta de mano (booleano)
+%       · Tiempo estimado de guardado de equipaje
+%       · Entrada al avión (puerta delantera)
+%
+% PARÁMETROS DE ENTRADA:
+%   - pctLuggage (float): Proporción de pasajeros con equipaje de mano.
+%       · Valor entre 0 y 1 (ej. 1 = todos con maleta, 0.3 = 30%)
+%
+% SALIDA:
+%   - passengers (struct array): Arreglo de estructuras, uno por pasajero.
+%       Campos principales: ID, Row, Seat, HasLuggage, StowTime, Entrance
+%
+% CONSIDERACIONES:
+%   - El avión tiene 30 filas, 6 asientos por fila (A–F)
+%   - El tiempo de guardado (StowTime) es aleatorio entre 5 y 15 segundos
+%     solo para pasajeros con maleta
+%   - Se asume que todos abordan por la puerta delantera ('front')
+%
+% EJEMPLO DE USO:
+%   passengers = generate_passengers(0.75);  % 75% con maleta
+%
+% AUTORES:
+%   Equipo de Optimización - Viva Aerobus
+%   Fecha: Junio 2025
+%   Versión: 21.0</span>`
+            },
+            wilma1: {
+                icon: '🔄',
+                title: 'sort_wilma_1',
+                main: `function boardingOrder = sort_wilma_v1(passengers)
+    % Nuevo WILMA V1 basado en zonas específicas por columna y fila
+
+    % Datos base
+    rows = [passengers.Row];
+    seats = {passengers.Seat};
+
+    % Funciones auxiliares
+    is_seat = @(letters) ismember(seats, cellstr(letters'));
+    in_row_range = @(r1, r2) rows >= r1 & rows <= r2;
+
+    % Zona 1+2: PRIORITY filas 1–7
+    z1 = in_row_range(1, 7);  % todas las letras
+    p1 = passengers(z1);
+    p1 = p1(randperm(length(p1)));
+
+    % Zona 3: filas 8–19, A/F
+    z3 = in_row_range(8,19) & is_seat('AF');
+    p3 = passengers(z3);
+    p3 = orden_descendente_por_fila(p3);
+
+    % Zona 4: filas 20–30, A/F
+    z4 = in_row_range(20,30) & is_seat('AF');
+    p4 = passengers(z4);
+    p4 = orden_descendente_por_fila(p4);
+
+    % Zona 5: filas 8–19, B/E
+    z5 = in_row_range(8,19) & is_seat('BE');
+    p5 = passengers(z5);
+    p5 = orden_descendente_por_fila(p5);
+
+    % Zona 6: filas 20–30, B/E
+    z6 = in_row_range(20,30) & is_seat('BE');
+    p6 = passengers(z6);
+    p6 = orden_descendente_por_fila(p6);
+
+    % Zona 7: filas 8–19, C/D
+    z7 = in_row_range(8,19) & is_seat('CD');
+    p7 = passengers(z7);
+    p7 = orden_descendente_por_fila(p7);
+
+    % Zona 8: filas 20–30, C/D
+    z8 = in_row_range(20,30) & is_seat('CD');
+    p8 = passengers(z8);
+    p8 = orden_descendente_por_fila(p8);
+
+    % Concatenar orden total
+    boardingOrder = [p1, p3, p4, p5, p6, p7, p8];
+end
+
+function group = orden_descendente_por_fila(pList)
+    % Ordena de atrás hacia adelante (dentro de filas, aleatorio)
+    [~, idx] = sort([pList.Row], 'descend');
+    pList = pList(idx);
+    uniqueRows = unique([pList.Row], 'stable');
+    group = [];
+    for r = uniqueRows
+        temp = pList([pList.Row] == r);
+        temp = temp(randperm(length(temp)));
+        group = [group, temp]; %#ok<AGROW>
+    end
+end
+`,
+                docs: `<span class="comment">%% DOCUMENTACIÓN - sort_wilma_1
+% 
+% PROPÓSITO:
+%   Ordena a los pasajeros siguiendo el método de abordaje WILMA clásico,
+%   donde se prioriza primero a los pasajeros de ventana (A y F), luego
+%   a los de medio (B y E), y por último a los de pasillo (C y D).
+%   Dentro de cada grupo, se ordena de atrás hacia adelante (filas altas a bajas).
+%
+% DETALLES DE IMPLEMENTACIÓN:
+%   - Zona 1: Ventana (A y F)
+%   - Zona 2: Medio (B y E)
+%   - Zona 3: Pasillo (C y D)
+%   - Dentro de cada zona, se ordena descendente por número de fila
+%
+% PARÁMETROS DE ENTRADA:
+%   - passengers (struct array): Lista de pasajeros con campos 'Row' y 'Seat'
+%
+% SALIDA:
+%   - sorted_passengers (struct array): Lista ordenada según el método WILMA v1
+%
+% CONSIDERACIONES:
+%   - Este script es puramente organizacional y no afecta directamente la simulación
+%   - Puede usarse como referencia o para pruebas aisladas
+%
+% USO OPCIONAL:
+%   - No es necesario correrlo directamente si se llama desde el simulador
+%   - Para probarlo individualmente:
+%       passengers = generate_passengers(1);
+%       orden = sort_wilma_v1(passengers);
+%
+% AUTORES:
+%   Equipo de Optimización - Viva Aerobus
+%   Fecha: Junio 2025
+%   Versión: 1.0</span>`
+            },
+            wilma2: {
+                icon: '🏆',
+                title: 'sort_wilma_2',
+                main: `function boardingOrder = sort_wilma_v2(passengers)
+    % WILMA V2 basado en zonas cruzadas por fila y letra
+
+    rows = [passengers.Row];
+    seats = {passengers.Seat};
+
+    is_seat = @(letters) ismember(seats, cellstr(letters'));
+    in_row_range = @(r1, r2) rows >= r1 & rows <= r2;
+
+    % Zona 1+2: PRIORITY filas 1–7
+    z1 = in_row_range(1, 7);
+    p1 = passengers(z1);
+    p1 = p1(randperm(length(p1)));  % aleatorizar
+
+    % Zona 3: filas 7–19 con F, y 20–30 con A
+    z3 = (in_row_range(7,19) & is_seat('F')) | (in_row_range(20,30) & is_seat('A'));
+    p3 = passengers(z3);
+    p3 = ordenar(p3);
+
+    % Zona 4: filas 7–19 con A, y 20–30 con F
+    z4 = (in_row_range(7,19) & is_seat('A')) | (in_row_range(20,30) & is_seat('F'));
+    p4 = passengers(z4);
+    p4 = ordenar(p4);
+
+    % Zona 5: filas 7–19 con B, y 20–30 con E
+    z5 = (in_row_range(7,19) & is_seat('B')) | (in_row_range(20,30) & is_seat('E'));
+    p5 = passengers(z5);
+    p5 = ordenar(p5);
+
+    % Zona 6: filas 7–19 con E, y 20–30 con B
+    z6 = (in_row_range(7,19) & is_seat('E')) | (in_row_range(20,30) & is_seat('B'));
+    p6 = passengers(z6);
+    p6 = ordenar(p6);
+
+    % Zona 7: filas 7–19 con C, y 20–30 con D
+    z7 = (in_row_range(7,19) & is_seat('C')) | (in_row_range(20,30) & is_seat('D'));
+    p7 = passengers(z7);
+    p7 = ordenar(p7);
+
+    % Zona 8: filas 7–19 con D, y 20–30 con C
+    z8 = (in_row_range(7,19) & is_seat('D')) | (in_row_range(20,30) & is_seat('C'));
+    p8 = passengers(z8);
+    p8 = ordenar(p8);
+
+    % Concatenar zonas en orden
+    boardingOrder = [p1, p3, p4, p5, p6, p7, p8];
+end
+
+function group = ordenar(pList)
+    % Orden descendente por fila, aleatorio dentro de la fila
+    [~, idx] = sort([pList.Row], 'descend');
+    pList = pList(idx);
+    uniqueRows = unique([pList.Row], 'stable');
+    group = [];
+    for r = uniqueRows
+        temp = pList([pList.Row] == r);
+        temp = temp(randperm(length(temp)));
+        group = [group, temp]; %#ok<AGROW>
+    end
+end
+`,
+                docs: `<span class="comment">%% DOCUMENTACIÓN - sort_wilma_2
+% 
+% PROPÓSITO:
+%   Implementa una versión optimizada del método WILMA, dividida en zonas
+%   basadas tanto en el número de fila como en la letra del asiento.
+%   Esta variación busca minimizar interferencias pasillo-asiento mediante
+%   un abordaje cruzado escalonado.
+%
+% DISEÑO DE ZONAS:
+%   - Zona 1+2: Filas 1-7 (todos los asientos A-F)
+%   - Zona 3 : Filas 7-19 (solo asiento F) + Filas 20-30 (solo asiento A)
+%   - Zona 4 : Filas 7-19 (solo A)         + Filas 20-30 (solo F)
+%   - Zona 5 : Filas 7-19 (solo B)         + Filas 20-30 (solo E)
+%   - Zona 6 : Filas 7-19 (solo E)         + Filas 20-30 (solo B)
+%   - Zona 7 : Filas 7-19 (solo C)         + Filas 20-30 (solo D)
+%   - Zona 8 : Filas 7-19 (solo D)         + Filas 20-30 (solo C)
+%
+% MÉTODO DE ORDENAMIENTO:
+%   - Se asignan zonas según la lógica anterior
+%   - Dentro de cada zona, se ordena aleatoriamente
+%   - Las zonas se concatenan en orden del 1 al 8
+%
+% PARÁMETROS DE ENTRADA:
+%   - passengers (struct array): Lista con campos 'Row' y 'Seat'
+%
+% SALIDA:
+%   - sorted_passengers (struct array): Lista ordenada según WILMA v2
+%
+% CONSIDERACIONES:
+%   - Este método fue el más eficiente en la simulación (tiempo mínimo)
+%   - Se puede invocar directamente para pruebas aisladas:
+%       passengers = generate_passengers(1);
+%       orden = sort_wilma_v2(passengers);
+%
+% USO OPCIONAL:
+%   - No es necesario correrlo directamente si se llama desde el simulador
+%   - Para probarlo individualmente:
+%       passengers = generate_passengers(1);
+%       orden = sort_wilma_v2(passengers);
+%
+% AUTORES:
+%   Equipo de Optimización - Viva Aerobus
+%   Fecha: Junio 2025
+%   Versión: 1.0</span>`
+            },
+            wilma3: {
+                icon: '🎲',
+                title: 'sort_wilma_3',
+                main: `function boardingOrder = sort_wilma_v3(passengers)
+    % WILMA V3: Orden por columna (A–F) de filas 7 a 30
+
+    rows = [passengers.Row];
+    seats = {passengers.Seat};
+
+    is_seat = @(letters) ismember(seats, cellstr(letters'));
+    in_row_range = @(r1, r2) rows >= r1 & rows <= r2;
+
+    % PRIORITY: filas 1–7
+    z1 = in_row_range(1, 7);
+    p1 = passengers(z1);
+    p1 = p1(randperm(length(p1)));  % aleatorizar
+
+    % Resto de zonas (7–30 por letra)
+    pA = ordenar(passengers(in_row_range(7,30) & is_seat('A')));
+    pF = ordenar(passengers(in_row_range(7,30) & is_seat('F')));
+    pB = ordenar(passengers(in_row_range(7,30) & is_seat('B')));
+    pE = ordenar(passengers(in_row_range(7,30) & is_seat('E')));
+    pC = ordenar(passengers(in_row_range(7,30) & is_seat('C')));
+    pD = ordenar(passengers(in_row_range(7,30) & is_seat('D')));
+
+    % Concatenar orden total
+    boardingOrder = [p1, pA, pF, pB, pE, pC, pD];
+end
+
+function group = ordenar(pList)
+    % Orden descendente por fila, aleatorio dentro de la fila
+    [~, idx] = sort([pList.Row], 'descend');
+    pList = pList(idx);
+    uniqueRows = unique([pList.Row], 'stable');
+    group = [];
+    for r = uniqueRows
+        temp = pList([pList.Row] == r);
+        temp = temp(randperm(length(temp)));
+        group = [group, temp]; %#ok<AGROW>
+    end
+end
+`,
+                docs: `<span class="comment">%% DOCUMENTACIÓN - sort_wilma_3
+% 
+% PROPÓSITO:
+%   Implementa una versión simplificada del método WILMA que agrupa a los
+%   pasajeros únicamente con base en la letra del asiento (columna), sin 
+%   considerar su fila. Este método reduce interferencias pasillo-asiento 
+%   mediante un abordaje por bloques de ventanilla, medio y pasillo.
+%
+% DISEÑO DE ZONAS:
+%   - Zona 1: Todos los asientos A
+%   - Zona 2: Todos los asientos F
+%   - Zona 3: Todos los asientos B
+%   - Zona 4: Todos los asientos E
+%   - Zona 5: Todos los asientos C
+%   - Zona 6: Todos los asientos D
+%
+% MÉTODO DE ORDENAMIENTO:
+%   - Se asigna a cada pasajero una zona según la letra de su asiento
+%   - Cada zona se revuelve aleatoriamente
+%   - Las zonas se concatenan en orden descendente: A → F → B → E → C → D
+%
+% PARÁMETROS DE ENTRADA:
+%   - passengers (struct array): Lista con campos 'Seat' y 'Row'
+%
+% SALIDA:
+%   - sorted_passengers (struct array): Lista ordenada según WILMA v3
+%
+% CONSIDERACIONES:
+%   - Método diseñado para facilitar la implementación en sala de espera
+%     sin necesidad de reconfigurar zonas según fila.
+%   - Aunque no fue el más eficiente en la simulación, sí logró
+%     acercarse mucho al mejor resultado con una menor complejidad operativa.
+%
+% USO OPCIONAL PARA PRUEBA:
+%   passengers = generate_passengers(1);
+%   orden = sort_wilma_v3(passengers);
+%
+% AUTORES:
+%   Equipo de Optimización - Viva Aerobus
+%   Fecha: Junio 2025
+%   Versión: 1.0</span>`
+            },
+            visualizer: {
+                icon: '📊',
+                title: 'visualize_boarding',
+                main: `function visualize_boarding(method, pctLuggage)
+    % Simulación con círculos con color y número visible
+
+    numRows = 30;
+    aisleX = 4; % Pasillo visual entre C y D
+    speedFactor = 2;
+
+    % Crear pasajeros
+    passengers = generate_passengers(pctLuggage);
+    if strcmpi(method, 'random')
+        order = sort_random(passengers);
+    elseif strcmpi(method, 'wilma')
+        order = sort_wilma(passengers);
+    else
+        error('Método debe ser "random" o "wilma".');
+    end
+
+    % Estados iniciales
+    for i = 1:length(order)
+        order(i).Status = "waiting";
+        order(i).Position = -1;
+        order(i).TimeRemaining = 0;
+    end
+
+    aisle = zeros(1, numRows); % Pasillo
+    seatedCount = 0;
+    totalPassengers = length(order);
+    nextToEnter = 1;
+    t = 0;
+
+    % Coordenadas para asiento visual
+    figure;
+    hold on;
+    axis equal off;
+    xlim([0.5 7.5]); ylim([0.5 numRows + 0.5]);
+    title(sprintf('Método: %s', upper(method)));
+
+    % Mapa de cabina: asientos y pasillo
+    for r = 1:numRows
+        for c = [1 2 3 5 6 7]
+            rectangle('Position', [c - 0.4, numRows - r + 1 - 0.4, 0.8, 0.8], ...
+                      'EdgeColor', [0.7 0.7 0.7], 'LineWidth', 1);
+        end
+    end
+
+    % Diccionario visual de pasajeros
+    passengerGraphics = gobjects(1, totalPassengers);
+    passengerLabels = gobjects(1, totalPassengers);
+
+    while seatedCount < totalPassengers
+        t = t + 1;
+
+        % Entrada
+        if nextToEnter <= totalPassengers
+            p = order(nextToEnter);
+            entryPos = strcmp(p.Entrance, 'front') * 1 + strcmp(p.Entrance, 'back') * numRows;
+
+            if aisle(entryPos) == 0
+                aisle(entryPos) = p.ID;
+                order(nextToEnter).Position = entryPos;
+                order(nextToEnter).Status = "walking";
+                nextToEnter = nextToEnter + 1;
+            end
+        end
+
+        % Actualización por pasajero
+        for i = 1:totalPassengers
+            p = order(i);
+            if p.Status == "seated" || p.Position == -1
+                continue
+            end
+
+            currentPos = p.Position;
+            targetRow = p.Row;
+
+            if currentPos == targetRow
+                if p.HasLuggage && p.TimeRemaining == 0
+                    order(i).Status = "stowing";
+                    order(i).TimeRemaining = p.StowTime;
+                elseif p.HasLuggage && p.TimeRemaining > 0
+                    order(i).TimeRemaining = p.TimeRemaining - 1;
+                    if order(i).TimeRemaining <= 0
+                        order(i).Status = "seated";
+                        aisle(currentPos) = 0;
+                        seatedCount = seatedCount + 1;
+                    end
+                else
+                    order(i).Status = "seated";
+                    aisle(currentPos) = 0;
+                    seatedCount = seatedCount + 1;
+                end
+            else
+                if strcmp(p.Entrance, "front")
+                    nextPos = currentPos + 1;
+                else
+                    nextPos = currentPos - 1;
+                end
+
+                if nextPos >= 1 && nextPos <= numRows && aisle(nextPos) == 0
+                    aisle(currentPos) = 0;
+                    aisle(nextPos) = p.ID;
+                    order(i).Position = nextPos;
+                end
+            end
+        end
+
+        % Dibujar pasajeros
+        delete(passengerGraphics); delete(passengerLabels);
+        for i = 1:totalPassengers
+            p = order(i);
+            if p.Status == "seated"
+                [x, y] = get_seat_coordinates(p.Seat, p.Row, numRows);
+                color = [0 0.8 0]; % verde
+                label = sprintf('%d%s', p.Row, p.Seat);
+            elseif p.Position ~= -1
+                x = aisleX;
+                y = numRows - p.Position + 1;
+                if p.HasLuggage
+                    color = [0 0 0]; % negro
+                else
+                    color = [1 1 1]; % blanco
+                end
+                label = sprintf('%d', p.ID);
+            else
+                continue
+            end
+
+            passengerGraphics(i) = scatter(x, y, 200, 'MarkerFaceColor', color, ...
+                'MarkerEdgeColor', 'k');
+            passengerLabels(i) = text(x, y, label, ...
+                'HorizontalAlignment', 'center', 'FontSize', 8, 'Color', 'k');
+        end
+
+        title(sprintf('%s | Tiempo: %ds | Sentados: %d/%d', ...
+            upper(method), t, seatedCount, totalPassengers));
+        drawnow;
+        pause(0.025);
+    end
+
+    fprintf('\n✅ Simulación terminada en %d segundos.\n', t);
+end
+
+function [x, y] = get_seat_coordinates(seatLetter, row, totalRows)
+    switch seatLetter
+        case 'A'; x = 1;
+        case 'B'; x = 2;
+        case 'C'; x = 3;
+        case 'D'; x = 5;
+        case 'E'; x = 6;
+        case 'F'; x = 7;
+    end
+    y = totalRows - row + 1;
+end
+`,
+                docs: `<span class="comment">%% DOCUMENTACIÓN - visualize_boarding
+% 
+% PROPÓSITO:
+%   Ejecuta la simulación visual del proceso de abordaje de un avión, 
+%   mostrando en tiempo real el movimiento de los pasajeros dentro de la 
+%   cabina según el método de abordaje seleccionado.
+%
+% MÉTODOS DISPONIBLES:
+%   - 'wilma1' : WILMA por bloques secuenciales por fila
+%   - 'wilma2' : WILMA cruzado (intercalando filas por letras)
+%   - 'wilma3' : WILMA simplificado (por letra de asiento)
+%
+% PARÁMETROS DE ENTRADA:
+%   - method (string): Método de abordaje ('wilma1', 'wilma2', 'wilma3')
+%   - pctLuggage (double): Porcentaje de pasajeros con maleta (0 a 1)
+%
+% FUNCIONAMIENTO:
+%   - Genera los pasajeros y ordena según el método elegido
+%   - Cada pasajero entra al avión y se mueve hacia su asiento
+%   - Si lleva maleta, tarda algunos segundos en almacenarla
+%   - Se visualiza el proceso: 
+%       - Verde = sentado
+%       - Blanco = sin maleta, caminando
+%       - Negro = con maleta, caminando o guardando equipaje
+%
+% SALIDA:
+%   - Gráfica animada con movimiento de pasajeros
+%   - Mensaje final con el tiempo total de abordaje
+%
+% CONSIDERACIONES:
+%   - Este script es puramente visual y no devuelve datos.
+%   - Útil para presentaciones y análisis cualitativo del abordaje.
+%   - Puede tardar dependiendo del número de pasajeros y velocidad del equipo.
+%
+% TIEMPO DE EJECUCIÓN ESTIMADO:
+%   - 180 pasajeros: ~20-40 segundos con visualización
+%
+% USO EJEMPLO:
+%   simulate_boarding('wilma2', 1);  % 100% con maleta, usando WILMA v2
+%
+% AUTORES:
+%   Equipo de Optimización - Viva Aerobus
+%   Fecha: Junio 2025
+%   Versión: 1.0</span>`
+            },
+            simulation: {
+                icon: '📈',
+                title: 'simulate_boarding',
+                main: `function simulate_boarding(method, pctLuggage)
+    % VISUALIZE_BOARDING Simula el abordaje con visualización gráfica
+    % method: 'random', 'wilma1', 'wilma2', 'wilma3'
+
+    numRows = 30;
+    aisleX = 4; % posición X del pasillo para visualización
+    speedFactor = 8;
+
+    % Crear pasajeros
+    passengers = generate_passengers(pctLuggage);
+
+    % Elegir método de abordaje
+    switch lower(method)
+        case 'random'
+            order = sort_random(passengers);
+        case 'wilma1'
+            order = sort_wilma_v1(passengers);
+        case 'wilma2'
+            order = sort_wilma_v2(passengers);
+        case 'wilma3'
+            order = sort_wilma_v3(passengers);
+        otherwise
+            error('Método no reconocido. Usa: random, wilma1, wilma2, wilma3');
+    end
+
+    % Inicializar estado
+    for i = 1:length(order)
+        order(i).Status = "waiting";
+        order(i).Position = -1;
+        order(i).TimeRemaining = 0;
+    end
+
+    aisle = zeros(1, numRows);
+    seatedCount = 0;
+    totalPassengers = length(order);
+    nextToEnter = 1;
+    t = 0;
+
+    % Preparar figura
+    figure;
+    hold on;
+    axis equal off;
+    xlim([0.5 7.5]); ylim([0.5 numRows + 0.5]);
+    title(sprintf('Método: %s', upper(method)));
+
+    % Dibujar estructura del avión
+    for r = 1:numRows
+        for c = [1 2 3 5 6 7]
+            rectangle('Position', [c - 0.4, numRows - r + 1 - 0.4, 0.8, 0.8], ...
+                      'EdgeColor', [0.7 0.7 0.7], 'LineWidth', 1);
+        end
+    end
+
+    passengerGraphics = gobjects(1, totalPassengers);
+    passengerLabels = gobjects(1, totalPassengers);
+
+    while seatedCount < totalPassengers
+        t = t + 1;
+
+        % Entrada
+        if nextToEnter <= totalPassengers
+            p = order(nextToEnter);
+            entryPos = strcmp(p.Entrance, 'front') * 1 + strcmp(p.Entrance, 'back') * numRows;
+
+            if aisle(entryPos) == 0
+                aisle(entryPos) = p.ID;
+                order(nextToEnter).Position = entryPos;
+                order(nextToEnter).Status = "walking";
+                nextToEnter = nextToEnter + 1;
+            end
+        end
+
+        % Actualización de estado
+        for i = 1:totalPassengers
+            p = order(i);
+            if p.Status == "seated" || p.Position == -1
+                continue
+            end
+
+            currentPos = p.Position;
+            targetRow = p.Row;
+
+            if currentPos == targetRow
+                if p.HasLuggage && p.TimeRemaining == 0
+                    order(i).Status = "stowing";
+                    order(i).TimeRemaining = p.StowTime;
+                elseif p.HasLuggage && p.TimeRemaining > 0
+                    order(i).TimeRemaining = p.TimeRemaining - 1;
+                    if order(i).TimeRemaining <= 0
+                        order(i).Status = "seated";
+                        aisle(currentPos) = 0;
+                        seatedCount = seatedCount + 1;
+                    end
+                else
+                    order(i).Status = "seated";
+                    aisle(currentPos) = 0;
+                    seatedCount = seatedCount + 1;
+                end
+            else
+                nextPos = currentPos + strcmp(p.Entrance, "front") * 1 - strcmp(p.Entrance, "back") * 1;
+                if nextPos >= 1 && nextPos <= numRows && aisle(nextPos) == 0
+                    aisle(currentPos) = 0;
+                    aisle(nextPos) = p.ID;
+                    order(i).Position = nextPos;
+                end
+            end
+        end
+
+        % Dibujar visual
+        delete(passengerGraphics); delete(passengerLabels);
+        for i = 1:totalPassengers
+            p = order(i);
+            if p.Status == "seated"
+                [x, y] = get_seat_coordinates(p.Seat, p.Row, numRows);
+                color = [0 0.8 0]; % verde
+                label = sprintf('%d%s', p.Row, p.Seat);
+            elseif p.Position ~= -1
+                x = aisleX;
+                y = numRows - p.Position + 1;
+                color = p.HasLuggage * [0 0 0] + ~p.HasLuggage * [1 1 1]; % negro o blanco
+                label = sprintf('%d%s', p.Row, p.Seat);
+            else
+                continue
+            end
+            passengerGraphics(i) = scatter(x, y, 200, 'MarkerFaceColor', color, 'MarkerEdgeColor', 'k');
+            passengerLabels(i) = text(x, y, label, 'HorizontalAlignment', 'center', 'FontSize', 8, 'Color', 'k');
+        end
+
+        title(sprintf('%s | Tiempo: %ds | Sentados: %d/%d', ...
+            upper(method), t, seatedCount, totalPassengers));
+        drawnow;
+        pause(0.05 / speedFactor);
+    end
+
+    fprintf('\n✅ Simulación terminada en %d segundos.\n', t);
+end
+
+function [x, y] = get_seat_coordinates(seatLetter, row, totalRows)
+    switch seatLetter
+        case 'A'; x = 1;
+        case 'B'; x = 2;
+        case 'C'; x = 3;
+        case 'D'; x = 5;
+        case 'E'; x = 6;
+        case 'F'; x = 7;
+    end
+    y = totalRows - row + 1;
+end
+`,
+                docs: `<span class="comment">%% DOCUMENTACIÓN - simulate_boarding
+% 
+% PROPÓSITO:
+%   Ejecuta la simulación del abordaje de pasajeros mostrando paso a paso
+%   el movimiento dentro del avión con una visualización animada.
+%
+% PARÁMETROS DE ENTRADA:
+%   - method (string): Método de abordaje a usar ('random', 'wilma1', 'wilma2', 'wilma3')
+%   - pctLuggage (double): Proporción de pasajeros con equipaje de mano (0 a 1)
+%
+% FUNCIONAMIENTO:
+%   - Genera la lista de pasajeros según la proporción de maletas
+%   - Ordena los pasajeros según el método especificado
+%   - Simula el abordaje en tiempo discreto:
+%       • Entrada al avión
+%       • Avance por el pasillo
+%       • Almacenamiento de equipaje (si aplica)
+%       • Asignación de asiento
+%   - Muestra la posición, estado y asiento de cada pasajero con colores:
+%       • Verde = Sentado, Blanco = Sin maleta, Negro = Con maleta
+%
+% SALIDA:
+%   - Impresión en consola del tiempo total de abordaje en segundos
+%   - Animación en tiempo real de la simulación
+%
+% USO EJEMPLO:
+%   simulate_boarding("wilma2", 1.0);
+%
+% LIMITACIONES:
+%   - No genera datos exportables
+%   - Requiere tiempo de ejecución mayor por la animación (no recomendado para múltiples iteraciones)
+%
+% RECOMENDADO PARA:
+%   - Visualización educativa y comparativa de métodos de abordaje
+%   - Presentaciones o validación del comportamiento del modelo
+%
+% AUTORES:
+%   Equipo de Optimización - Viva Aerobus
+%   Fecha: Junio 2025
+%   Versión: 1.0</span>`
+            },
+            comparator: {
+                icon: '⚖️',
+                title: 'simulation_boarding_backend',
+                main: `function totalTime = simulate_boarding_backend(passengers)
+    % SIMULATE_BOARDING_BACKEND Simula el abordaje y devuelve el tiempo total (sin gráficos)
+
+    numRows = 30;
+    aisle = zeros(1, numRows);
+    seatedCount = 0;
+    totalPassengers = length(passengers);
+    nextToEnter = 1;
+    t = 0;
+
+    % Inicializar estado de cada pasajero
+    for i = 1:totalPassengers
+        passengers(i).Status = "waiting";
+        passengers(i).Position = -1;
+        passengers(i).TimeRemaining = 0;
+    end
+
+    while seatedCount < totalPassengers
+        t = t + 1;
+
+        % Entrada al pasillo
+        if nextToEnter <= totalPassengers
+            p = passengers(nextToEnter);
+            entryPos = strcmp(p.Entrance, 'front') * 1 + strcmp(p.Entrance, 'back') * numRows;
+
+            if aisle(entryPos) == 0
+                aisle(entryPos) = p.ID;
+                passengers(nextToEnter).Position = entryPos;
+                passengers(nextToEnter).Status = "walking";
+                nextToEnter = nextToEnter + 1;
+            end
+        end
+
+        % Avance y acomodo
+        for i = 1:totalPassengers
+            p = passengers(i);
+            if p.Status == "seated" || p.Position == -1
+                continue
+            end
+
+            currentPos = p.Position;
+            targetRow = p.Row;
+
+            if currentPos == targetRow
+                if p.HasLuggage && p.TimeRemaining == 0
+                    passengers(i).Status = "stowing";
+                    passengers(i).TimeRemaining = p.StowTime;
+                elseif p.HasLuggage && p.TimeRemaining > 0
+                    passengers(i).TimeRemaining = p.TimeRemaining - 1;
+                    if passengers(i).TimeRemaining <= 0
+                        passengers(i).Status = "seated";
+                        aisle(currentPos) = 0;
+                        seatedCount = seatedCount + 1;
+                    end
+                else
+                    passengers(i).Status = "seated";
+                    aisle(currentPos) = 0;
+                    seatedCount = seatedCount + 1;
+                end
+            else
+                nextPos = currentPos + strcmp(p.Entrance, "front") * 1 - strcmp(p.Entrance, "back") * 1;
+                if nextPos >= 1 && nextPos <= numRows && aisle(nextPos) == 0
+                    aisle(currentPos) = 0;
+                    aisle(nextPos) = p.ID;
+                    passengers(i).Position = nextPos;
+                end
+            end
+        end
+    end
+
+    totalTime = t;
+end
+`,
+                docs: `<span class="comment">%% DOCUMENTACIÓN - simulate_boarding_backend
+% 
+% PROPÓSITO:
+%   Ejecuta la simulación del abordaje de pasajeros sin visualización,
+%   optimizada para realizar múltiples iteraciones rápidamente y recolectar
+%   datos cuantitativos del proceso.
+%
+% PARÁMETROS DE ENTRADA:
+%   - passengers (struct array): Lista de pasajeros generada y ordenada por método
+%
+% FUNCIONAMIENTO:
+%   - Simula el abordaje paso a paso (entrada, avance, almacenaje de maleta, asiento)
+%   - Controla el movimiento en el pasillo y gestiona interferencias
+%   - Calcula el tiempo total necesario para sentar a todos los pasajeros
+%
+% SALIDA:
+%   - totalTime (double): Tiempo total de abordaje en segundos
+%   - passengerLog (table): Tabla con información individual por pasajero:
+%       • ID, tiempo de entrada, tiempo de asiento, si lleva maleta, etc.
+%
+% USO EJEMPLO:
+%   [tiempo, log] = simulate_boarding_backend(order);
+%
+% APLICACIONES:
+%   - Comparación entre métodos de abordaje (WILMA v1, v2, v3, random)
+%   - Análisis estadístico y económico del turnaround
+%   - Exportación de datos a Excel o .mat
+%
+% NOTA:
+%   Esta función no tiene visualización gráfica.
+%   Ideal para simulaciones por lote (e.g., 100 iteraciones por método)
+%
+% AUTORES:
+%   Equipo de Optimización - Viva Aerobus
+%   Fecha: Junio 2025
+%   Versión: 1.0</span>`
+            }
+
+        };
+
+        // Funciones para manejar el modal
+        function showCode(codeType) {
+            currentCodeType = codeType; // Guardar el tipo actual
+            
+            const modal = document.getElementById('codeModal');
+            const modalIcon = document.getElementById('modalIcon');
+            const modalTitleText = document.getElementById('modalTitleText');
+            const codeContent = document.getElementById('codeContent');
+            
+            // Configurar información del modal
+            const codeInfo = codeDatabase[codeType];
+            if (codeInfo) {
+                modalIcon.textContent = codeInfo.icon;
+                modalTitleText.textContent = codeInfo.title;
+                codeContent.innerHTML = codeInfo.main;
+            } else {
+                // Fallback si no se encuentra el código
+                modalIcon.textContent = '📄';
+                modalTitleText.textContent = 'Código no encontrado';
+                codeContent.innerHTML = `<span class="comment">% Código para "${codeType}" no está disponible</span>`;
+            }
+            
+            // Mostrar modal con animación
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+            
+            // Reset tabs
+            document.querySelectorAll('.code-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector('.code-tab').classList.add('active');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('codeModal');
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+
+        function switchTab(tabType) {
+            const codeContent = document.getElementById('codeContent');
+            const currentCodeType = getCurrentCodeType();
+            
+            // Update active tab
+            document.querySelectorAll('.code-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Load content based on tab
+            const codeInfo = codeDatabase[currentCodeType];
+            if (codeInfo && codeInfo[tabType]) {
+                codeContent.innerHTML = codeInfo[tabType];
+            } else {
+                codeContent.innerHTML = '<span class="comment">% Contenido no disponible para esta pestaña</span>';
+            }
+        }
+
+        function getCurrentCodeType() {
+            return currentCodeType; // Retornar la variable global
+        }
+
+        function copyCode() {
+            const codeContent = document.getElementById('codeContent');
+            const textContent = codeContent.textContent || codeContent.innerText;
+            
+            navigator.clipboard.writeText(textContent).then(() => {
+                // Show feedback
+                const copyBtn = document.querySelector('.copy-btn');
+                const originalText = copyBtn.innerHTML;
+                copyBtn.innerHTML = '✅ ¡Copiado!';
+                copyBtn.style.background = '#16a34a';
+                
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalText;
+                    copyBtn.style.background = '#475569';
+                }, 2000);
+            }).catch(() => {
+                alert('Error al copiar el código');
+            });
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('codeModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Cerrar modal con tecla Escape
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Animaciones al hacer scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        // Observar elementos para animaciones
+        document.addEventListener('DOMContentLoaded', () => {
+            const animatedElements = document.querySelectorAll('.method-card, .stat-card, .code-card');
+            animatedElements.forEach(el => observer.observe(el));
+        });
+
+        // Smooth scroll para navegación
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
